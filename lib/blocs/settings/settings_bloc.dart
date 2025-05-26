@@ -7,12 +7,12 @@ abstract class SettingsEvent extends Equatable {
   const SettingsEvent();
   
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
-class ToggleThemeEvent extends SettingsEvent {}
+class InitializeSettingsEvent extends SettingsEvent {}
 
-class LoadSettingsEvent extends SettingsEvent {}
+class ToggleThemeEvent extends SettingsEvent {}
 
 // State
 class SettingsState extends Equatable {
@@ -31,29 +31,44 @@ class SettingsState extends Equatable {
   }
   
   @override
-  List<Object> get props => [isDarkMode];
+  List<Object?> get props => [isDarkMode];
 }
 
 // Bloc
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
+  static const String _darkModeKey = 'dark_mode';
+  
   SettingsBloc() : super(const SettingsState()) {
+    on<InitializeSettingsEvent>(_onInitializeSettings);
     on<ToggleThemeEvent>(_onToggleTheme);
-    on<LoadSettingsEvent>(_onLoadSettings);
     
-    // Load settings when bloc is created
-    add(LoadSettingsEvent());
+    // Initialize settings when bloc is created
+    add(InitializeSettingsEvent());
+  }
+  
+  Future<void> _onInitializeSettings(InitializeSettingsEvent event, Emitter<SettingsState> emit) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final isDarkMode = prefs.getBool(_darkModeKey) ?? false;
+      
+      emit(state.copyWith(isDarkMode: isDarkMode));
+    } catch (e) {
+      // If there's an error, use default settings
+      print('Error initializing settings: $e');
+    }
   }
   
   Future<void> _onToggleTheme(ToggleThemeEvent event, Emitter<SettingsState> emit) async {
-    final prefs = await SharedPreferences.getInstance();
-    final newDarkMode = !state.isDarkMode;
-    await prefs.setBool('isDarkMode', newDarkMode);
-    emit(state.copyWith(isDarkMode: newDarkMode));
-  }
-  
-  Future<void> _onLoadSettings(LoadSettingsEvent event, Emitter<SettingsState> emit) async {
-    final prefs = await SharedPreferences.getInstance();
-    final isDarkMode = prefs.getBool('isDarkMode') ?? false;
-    emit(state.copyWith(isDarkMode: isDarkMode));
+    try {
+      final newDarkMode = !state.isDarkMode;
+      
+      // Save to preferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_darkModeKey, newDarkMode);
+      
+      emit(state.copyWith(isDarkMode: newDarkMode));
+    } catch (e) {
+      print('Error toggling theme: $e');
+    }
   }
 }

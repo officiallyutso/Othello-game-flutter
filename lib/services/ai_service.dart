@@ -164,7 +164,6 @@ class AIService {
       }
     }
     
-    
     // Add mobility score
     if (game.currentPlayer == aiPlayer) {
       score += mobilityScore;
@@ -172,7 +171,6 @@ class AIService {
       score -= mobilityScore;
     }
     
-
     return score;
   }
 }

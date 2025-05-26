@@ -304,58 +304,59 @@ class GameModel extends Equatable {
   }
   
   // Convert to a map for Firestore
+  // In your GameModel class, update the toMap method:
+  
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'board': board.map((row) => 
-        row.map((cell) {
-          switch (cell) {
-            case CellState.empty: return 0;
-            case CellState.black: return 1;
-            case CellState.white: return 2;
-          }
-        }).toList()
-      ).toList(),
-      'currentPlayer': currentPlayer == CellState.black ? 1 : 2,
-      'gameMode': gameMode.index,
-      'aiDifficulty': aiDifficulty.index,
-      'status': status.index,
-      'blackScore': blackScore,
-      'whiteScore': whiteScore,
-      'roomCode': roomCode,
-      'creatorId': creatorId,
-      'joinerId': joinerId,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
-    };
+  // Convert 2D board array to a flattened string representation
+  final boardString = board.map((row) => 
+    row.map((cell) => cell.index.toString()).join('')
+  ).join('|');
+  
+  return {
+    'id': id,
+    'board': boardString, // Store as string instead of nested arrays
+    'currentPlayer': currentPlayer.index,
+    'gameMode': gameMode.index,
+    'aiDifficulty': aiDifficulty.index,
+    'status': status.index,
+    'blackScore': blackScore,
+    'whiteScore': whiteScore,
+    'roomCode': roomCode,
+    'creatorId': creatorId,
+    'joinerId': joinerId,
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+  };
   }
   
-  // Create from a Firestore map
+  // Then update the fromMap method to parse this format:
   factory GameModel.fromMap(Map<String, dynamic> map) {
-    return GameModel(
-      id: map['id'],
-      board: (map['board'] as List).map((row) => 
-        (row as List).map((cell) {
-          switch (cell) {
-            case 0: return CellState.empty;
-            case 1: return CellState.black;
-            case 2: return CellState.white;
-            default: return CellState.empty;
-          }
-        }).toList()
-      ).toList(),
-      currentPlayer: map['currentPlayer'] == 1 ? CellState.black : CellState.white,
-      gameMode: GameMode.values[map['gameMode']],
-      aiDifficulty: AIDifficulty.values[map['aiDifficulty']],
-      status: GameStatus.values[map['status']],
-      blackScore: map['blackScore'],
-      whiteScore: map['whiteScore'],
-      roomCode: map['roomCode'],
-      creatorId: map['creatorId'],
-      joinerId: map['joinerId'],
-      createdAt: DateTime.parse(map['createdAt']),
-      updatedAt: DateTime.parse(map['updatedAt']),
-    );
+  // Parse the board string back to a 2D array
+  final boardString = map['board'] as String;
+  final rows = boardString.split('|');
+  final board = List<List<CellState>>.generate(
+    boardSize,
+    (r) => List<CellState>.generate(
+      boardSize,
+      (c) => CellState.values[int.parse(rows[r][c])],
+    ),
+  );
+  
+  return GameModel(
+    id: map['id'],
+    board: board,
+    currentPlayer: CellState.values[map['currentPlayer']],
+    gameMode: GameMode.values[map['gameMode']],
+    aiDifficulty: AIDifficulty.values[map['aiDifficulty']],
+    status: GameStatus.values[map['status']],
+    blackScore: map['blackScore'],
+    whiteScore: map['whiteScore'],
+    roomCode: map['roomCode'],
+    creatorId: map['creatorId'],
+    joinerId: map['joinerId'],
+    createdAt: DateTime.parse(map['createdAt']),
+    updatedAt: DateTime.parse(map['updatedAt']),
+  );
   }
   
   @override
