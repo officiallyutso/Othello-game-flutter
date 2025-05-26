@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "8187509421",
+    "project_id": "tsakheaven",
+    "storage_bucket": "tsakheaven.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:8187509421:android:f51c50d908da9385342424",
+        "android_client_info": {
+          "package_name": "com.example.othello"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "8187509421-4dnepsipaiqc33dlr2hd02jkrgp9mi15.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCS9NK1Ak0wUd25RjdHJFoVy4fprLz47yM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "8187509421-4dnepsipaiqc33dlr2hd02jkrgp9mi15.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
