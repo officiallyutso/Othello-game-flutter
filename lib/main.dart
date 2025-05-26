@@ -19,3 +19,18 @@ class MyApp extends StatelessWidget {
 }
 
 class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Home'),
+      ),
+      body: Center(
+        child: Text(
+          'Hello, Flutter!',
+          style: TextStyle(fontSize: 24),
+        ),
+      ),
+    );
+  }
+}
