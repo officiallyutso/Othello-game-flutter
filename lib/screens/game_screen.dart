@@ -192,20 +192,28 @@ class GameScreen extends StatelessWidget {
   void _showRestartDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      barrierDismissible: false, // Prevent dismissing by tapping outside
+      builder: (dialogContext) => AlertDialog(
         title: const Text('Restart Game?'),
         content: const Text('Are you sure you want to restart the game?'),
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.of(dialogContext).pop();
             },
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
-              context.read<GameBloc>().add(RestartGameEvent());
+              // First close the dialog
+              Navigator.of(dialogContext).pop();
+              
+              // Then restart with a small delay to ensure dialog is closed
+              Future.delayed(const Duration(milliseconds: 100), () {
+                if (context.mounted) {
+                  context.read<GameBloc>().add(RestartGameEvent());
+                }
+              });
             },
             child: const Text('Restart'),
           ),
