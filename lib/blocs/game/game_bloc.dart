@@ -293,29 +293,53 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       final gameMode = state.game!.gameMode;
       final aiDifficulty = state.game!.aiDifficulty;
       
-      // For online games, we need to create a new room
+      // For online games, we need to handle differently
       if (gameMode == GameMode.online) {
-        // Leave the current room
+        // First emit a loading state
+        emit(state.copyWith(isLoading: true, error: null));
+        
+        // Leave the current room safely
         if (state.roomCode != null) {
-          await _firebaseService.leaveGameRoom(state.roomCode!);
+          try {
+            await _firebaseService.leaveGameRoom(state.roomCode!);
+          } catch (e) {
+            print('Error leaving room: $e');
+            // Continue anyway
+          }
         }
         
-        // Cancel the subscription
-        await _gameSubscription?.cancel();
-        _gameSubscription = null;
+        // Cancel the subscription safely
+        if (_gameSubscription != null) {
+          try {
+            await _gameSubscription?.cancel();
+          } catch (e) {
+            print('Error canceling subscription: $e');
+            // Continue anyway
+          }
+          _gameSubscription = null;
+        }
+        
+        // Reset state before creating a new room
+        emit(const GameState(isLoading: true));
         
         // Create a new room
         add(CreateRoomEvent());
         return;
       }
       
-      // For local games, just start a new game
+      // For local games, just start a new game with a clean state
+      emit(const GameState(isLoading: true));
+      
+      // Small delay to ensure UI updates properly
+      await Future.delayed(const Duration(milliseconds: 100));
+      
       add(StartGameEvent(
         gameMode: gameMode,
         aiDifficulty: aiDifficulty,
       ));
     } catch (e) {
-      emit(state.copyWith(
+      // If any error occurs, reset to a clean state
+      emit(GameState(
         error: 'Failed to restart game: $e',
       ));
     }

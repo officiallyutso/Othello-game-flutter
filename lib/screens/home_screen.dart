@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:othello/blocs/settings/settings_bloc.dart';
 import 'package:othello/models/game_model.dart';
+import 'package:othello/screens/about_screen.dart';  
 import 'package:othello/screens/game_screen.dart';
 import 'package:othello/screens/join_room_screen.dart';
 import 'package:othello/widgets/menu_button.dart';
@@ -128,6 +129,36 @@ class HomeScreen extends StatelessWidget {
                           },
                         ),
                       ],
+                    ),
+                    
+                    const SizedBox(height: 24),
+                    
+                    // About button
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const AboutScreen()),
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.info_outline,
+                        color: Colors.white,
+                      ),
+                      label: const Text(
+                        'About',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                        backgroundColor: Colors.white.withOpacity(0.2),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
                     ),
                   ],
                 ),
