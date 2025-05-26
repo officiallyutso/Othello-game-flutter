@@ -240,7 +240,7 @@ class AboutScreen extends StatelessWidget {
       onTap: onTap,
     );
   }
-  
+  ///url launching
   Future<void> _launchUrl(String urlString) async {
     final Uri url = Uri.parse(urlString);
     if (!await launchUrl(url)) {
