@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:othello/blocs/game/game_bloc.dart';
+import 'package:othello/models/game_model.dart'; 
 import 'package:othello/screens/game_screen.dart';
 
 class JoinRoomScreen extends StatefulWidget {
