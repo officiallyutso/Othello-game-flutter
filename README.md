@@ -7,6 +7,7 @@
 
 ![Othello Game Banner](https://img.shields.io/badge/Othello-Flutter%20Game-brightgreen?style=for-the-badge&logo=flutter)
 
+
 [![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg?style=flat-square&logo=flutter)](https://flutter.dev/)
 [![Dart](https://img.shields.io/badge/Dart-3.0+-orange.svg?style=flat-square&logo=dart)](https://dart.dev/)
 [![Firebase](https://img.shields.io/badge/Firebase-Enabled-yellow.svg?style=flat-square&logo=firebase)](https://firebase.google.com/)
